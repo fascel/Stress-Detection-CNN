@@ -1,0 +1,40 @@
+    <!-- /templates/studentslist.html  -->
+    <script type="text/javascript">
+        function getTaskId(){
+            var id = document.getElementById('getTaskId').value;
+            alert(id);
+        }
+    </script>
+    {% extends 'first.jsp' %}
+
+    {% block content %}
+        <div class="container" style="overflow: auto; max-height: 80vh">
+            <div class="table-responsive">
+                <table class="table" id="StudentTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Roll no.</th>
+                            <th scope="col">Twitter ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                   
+                    {% for item in data %}
+                        <tr>
+                            <td>{{item[0]}}</td>
+                            <td>{{item[1]}}</td>
+                            <td>{{item[3]}}</td>
+                            <td>{{item[4]}}</td>
+                            <td><form role="form"  method="post" action="/last">
+                                <input class="button button5" type="submit" id="submit" onclick="getTaskId();" value="Analyze Stress" />
+                                <input type="hidden" id="getTaskId"  value={{item[4]}} />
+                                 </form> </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endblock %}
