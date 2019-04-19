@@ -1,33 +1,20 @@
 #!/usr/bin/python
 import sys
-print ('Number of Arguments:', len(sys.argv), 'arguments.')
-print ('Argument List:', str(sys.argv))
-print('This is Python Code')
-print('Executing Python')
-print('From Java')
-# General:
 import tweepy           # To consume Twitter's API
 import pandas as pd     # To handle data
 import numpy as np      # For number computing
+import re
 
+from credentials import *  
 
 # For plotting and visualization:
 from IPython.display import display
-#from matplotlib import pyplot as plt
-#plt.ion()
-#import seaborn as sns
-# We import our access keys:
-from credentials import *    # This will allow us to use the keys as variables
-
-from flask import Flask, render_template, request
-app = Flask(__name__)
-app.config.update(DEBUG=True)
-
-@app.route('/')
-def student():
-   return render_template('graph.jsp')
-
-
+from bs4 import BeautifulSoup
+from keras.models import model_from_json
+from nltk.tokenize import WordPunctTokenizer
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences  
+from keras import backend as K
 # API's setup:
 def twitter_setup():
     """
@@ -41,39 +28,7 @@ def twitter_setup():
     # Return API with authentication:
     api = tweepy.API(auth)
     return api
-# We create an extractor object:
-extractor = twitter_setup()
 
-# We create a tweet list as follows:
-tweets = extractor.user_timeline(screen_name="FactsOfSchool", count=20)
-print("Number of tweets extracted: {}.\n".format(len(tweets)))
-
-# We print the most recent 5 tweets:
-
-for tweet in tweets[:1]:
-    print(tweet.text)
-    print()
-    # We create a pandas dataframe as follows:
-    data = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
-    data.to_csv('C:/Users/Fascel/Desktop/BEProject/templates/extracted_tweets.csv',encoding='utf-8')
-    # We display the first 10 elements of the dataframe:
-    display(data.head(10))
-
-
-
-import re
-import pandas as pd
-import numpy as np      # For number computing
-
-
-
-# For plotting and visualization:
-from IPython.display import display
-from bs4 import BeautifulSoup
-from keras.models import model_from_json
-from nltk.tokenize import WordPunctTokenizer
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
 
 
 tok = WordPunctTokenizer()
@@ -106,79 +61,20 @@ def tweet_cleaner_updated(text):
     words = [x for x  in tok.tokenize(letters_only) if len(x) > 1]
     return (" ".join(words)).strip()
 
+#from flask import Flask, render_template, request
+#app = Flask(__name__)
+#app.config.update(DEBUG=True)
 
-csv = 'C:/Users/Fascel/Desktop/BEProject/templates/extracted_tweets.csv'
-data = pd.read_csv(csv,index_col=0)
-
-
-print("Cleaning the tweets...\n")
-clean_tweet_texts = []
-for i in range(0, len(data)):
-        if ((i + 1) % 100000 == 0):
-            print("Tweets %d of %d has been processed" % (i + 1, len(data)))
-        clean_tweet_texts.append(tweet_cleaner_updated(data['Tweets'][i]))
-
-clean_df = pd.DataFrame(clean_tweet_texts, columns=['text'])
-
-clean_df[clean_df.isnull().any(axis=1)].head()
-
-np.sum(clean_df.isnull().any(axis=1))
-
-clean_df.isnull().any(axis=0)
-
-clean_df.dropna(inplace=True)
-clean_df.reset_index(drop=True,inplace=True)
-
-display(clean_df.head(len(clean_df)))
-clean_df.info()
-clean_df.to_csv('C:/Users/Fascel/Desktop/BEProject/templates/clean_tweet.csv')
-
-x = clean_df.text
-
-tokenizer = Tokenizer(num_words=100000)
-tokenizer.fit_on_texts(x)
-sequences_test = tokenizer.texts_to_sequences(x)
-x_test_seq = pad_sequences(sequences_test, maxlen=45)
-
-for y in x_test_seq[:10]:
-    print(y)
+#@app.route('/')
+#def index():
+   #return render_template('graph.jsp')
 
 
-json_file = open('model.json','r')
-loaded_model_json = json_file.read()
-json_file.close()
-loaded_model = model_from_json(loaded_model_json)
-loaded_model.load_weights('model_weights.h5')
-
-
-
-prediction = loaded_model.predict(x_test_seq)
-#proba=loaded_model.predict_classes(x_test_seq)
-
-df = pd.DataFrame(prediction, columns = ['output'])
-
-
-rows=len(df)
-
-display(df.head(rows))
-
-ncount=0.0
-for i in range (0,rows) :
-    value=df['output'].iloc[i]
-    if value>0.5 :
-        ncount += 1
-
-
-negtweetcount= (ncount/rows)*100
-
-print(negtweetcount)
-
-
-@app.route('/last', methods=['POST'])
-def last():
-   if request.method == 'POST':
-      negativity=int(negtweetcount)
-      return render_template('output.jsp',negativity=negativity)
+#@app.route('/last', methods=['POST'])
+#def last():
+   #if request.method == 'POST':
+      #negativity=int(negtweetcount)
+      #return render_template('output.jsp',negativity=negativity)
    
-if __name__ == '__main__':
-   app.run(debug = True,use_reloader= True)
+#if __name__ == '__main__':
+   #app.run(debug = True,use_reloader= True)
