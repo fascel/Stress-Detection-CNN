@@ -12,12 +12,11 @@ The solution being proposed includes employing real time twitter data by investi
 ## Proposed Solution :
 The proposed solution aims at building an automated system that monitors the social media activities from twitter of each student and calculates the stress levels based on the data obtained.
 <p align="center">
-  <img alt="Proposed System" src="https://github.com/fascel/cnn/proposed_system.png?raw=true">
+  <img src="https://github.com/fascel/Stress-Detection-CNN/blob/master/proposed_system.png">
 </p>
+
 * Training Dataset: The dataset chosen for training is [Sentiment140](https://www.kaggle.com/kazanova/sentiment140), which originated from Stanford University.We prepocessed the data from this dataset which included cleaning and splitting the data into Training/Development/Testing Sets followed by generating WordEmbeddings(Word2Vec) and later Tokenization and Zero Padding.
 * 1-D CNN model: This model is defined ,built and trained using the above mentioned preprocessed dataset and tested using the real time Twitter dataset.
 * Twitter data is used to detect user's Psychological stress levels.
 * In order to get the stress results, the real time extracted tweets are pre-processed using the same cleaning function used while training the model. These pre-processed tweets are then tokenised and zero padded and fed into the trained CNN model for predictions.
 * The probability of negativity in each extracted tweet is predicted and the final stress percentage is calculated by counting the number of negative tweets (the tweets having a probability value less than 0.5) and deciding the result by the total number of tweets extracted.
-
-
