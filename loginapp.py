@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # creating connection Object which will contain SQL Server Connection
 
-connection = pypyodbc.connect('Driver={SQL Server};Server=.\FASCELSQLSERVER;Database=demo;uid=sa;pwd=Fascelsql')# Creating C
+connection = pypyodbc.connect('Driver={SQL Server};Server=.\FASCELSQLSERVER;Database=demo;uid=sa;pwd=*****')# Creating C
 cursor = connection.cursor()
 #pursor = connection.cursor()
 
@@ -34,13 +34,13 @@ def last():
             print()
             # We create a pandas dataframe as follows:
             data = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
-            data.to_csv('C:/Users/Fascel/Desktop/BEProject/templates/extracted_tweets.csv',encoding='utf-8')
+            data.to_csv(' extracted_tweets.csv',encoding='utf-8')
             # We display the first 10 elements of the dataframe:
             display(data.head(10))
 
-        csv = 'C:/Users/Fascel/Desktop/BEProject/templates/extracted_tweets.csv'
+        csv = ' extracted_tweets.csv'
         data = pd.read_csv(csv,index_col=0)
-        csvs = 'C:/Users/Fascel/Desktop/BEProject/templates/XTrainArrays.csv'
+        csvs = ' XTrainArrays.csv'
 
         print("Cleaning the tweets...\n")
         clean_tweet_texts = []
@@ -57,7 +57,7 @@ def last():
         clean_df.reset_index(drop=True,inplace=True)
         display(clean_df.head(len(clean_df)))
         clean_df.info()
-        clean_df.to_csv('C:/Users/Fascel/Desktop/BEProject/templates/clean_tweet.csv')
+        clean_df.to_csv('clean_tweet.csv')
         x = clean_df.text
         dfs = pd.read_csv(csvs,header=None)
         dfs.columns=['TrainTweet']
@@ -67,7 +67,8 @@ def last():
         sequences_test = tokenizer.texts_to_sequences(x)
         x_test_seq = pad_sequences(sequences_test, maxlen=45)
 
-        for y in x_test_seq[:10]:
+        for y in x_test_seq[:10]: 
+
             print(y)
 
         json_file = open('model.json','r')
@@ -116,12 +117,7 @@ def login():
                 return redirect(url_for('first'))
     else:
         error = 'Invalid Credentials. Please try again.'
-    return render_template('login.html',error=error)  
-    #if request.method == 'POST':
-        #if request.form['email'] != 'merly@fragnel.in' or request.form['password'] != 'msmerly':
-            #error = 'Invalid Credentials. Please try again.'
-        #else:
-            #return redirect(url_for('first'))return render_template('login.html',error=error)        
+    return render_template('login.html',error=error)         
     
 
 if __name__ == '__main__':
